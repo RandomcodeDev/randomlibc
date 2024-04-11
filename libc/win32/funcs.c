@@ -1,3 +1,6 @@
+// NOTE: this file could be replaced by just linking to kernel32, but this file is used instead because I'm just cool
+// like that
+
 #include <assert.h>
 #include <wchar.h>
 
@@ -8,10 +11,14 @@
 
 PIMAGE_DOS_HEADER ntDll;
 
-// scam the linker, and export this so that other things can get at it
-void *__imp_LdrGetProcedureAddress;
-void *__imp_NtTerminateProcess;
-#pragma comment(linker, "/export:NtTerminateProcess=__imp_NtTerminateProcess")
+// scam the linker, and export so that other things can get at it
+#define MAKE_FUNCTION_STUB(name)                                                                                       \
+    void *__imp_##name;                                                                                               \
+    _LIBC_REEXPORT(__imp_##name, name);
+
+MAKE_FUNCTION_STUB(LdrGetProcedureAddress);
+MAKE_FUNCTION_STUB(DbgPrint);
+MAKE_FUNCTION_STUB(NtTerminateProcess);
 
 #define GET_FUNCTION(dll, name)                                                                                        \
     _LibcAssert(NT_SUCCESS(LdrGetProcedureAddress((dll), &(ANSI_STRING)RTL_CONSTANT_STRING(#name), 0, &__imp_##name)))
@@ -62,15 +69,16 @@ static void GetLdrGetProcedureAddress(void)
 
     nameCount = exports->NumberOfNames / sizeof(uint32_t);
     nameAddresses = (uint32_t *)((uint8_t *)ntDll + exports->AddressOfNames);
-    ordinals = (uint32_t *)((uint8_t *)ntDll + exports->AddressOfNameOrdinals);
+    ordinals = (uint16_t *)((uint8_t *)ntDll + exports->AddressOfNameOrdinals);
     functions = (uint32_t *)((uint8_t *)ntDll + exports->AddressOfFunctions);
 
+    // TODO: use bsearch once it's implemented
     for (i = 0; i < nameCount; i++)
     {
         name = (const char *)((uint8_t *)ntDll + nameAddresses[i]);
         if (strcmp(name, "LdrGetProcedureAddress") == 0)
         {
-             __imp_LdrGetProcedureAddress = (uint8_t *)ntDll + functions[ordinals[i]];
+            __imp_LdrGetProcedureAddress = (uint8_t *)ntDll + functions[ordinals[i]];
 
             break;
         }

@@ -8,6 +8,8 @@
 
 #include "libc_public.h"
 
+_LIBC_BEGIN_EXTERN_C
+
 extern _LIBC_EXPORT void _LIBC_API _LibcHandleAssert(int condition, const char *text);
 
 #ifdef NDEBUG
@@ -15,3 +17,5 @@ extern _LIBC_EXPORT void _LIBC_API _LibcHandleAssert(int condition, const char *
 #else
 #define assert(condition) _LibcHandleAssert((condition), #condition);
 #endif
+
+_LIBC_END_EXTERN_C

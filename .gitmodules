@@ -1,3 +1,6 @@
 [submodule "deps/phnt"]
 	path = deps/phnt
 	url = https://github.com/MobSlicer152/phnt.git
+[submodule "deps/mimalloc"]
+	path = deps/mimalloc
+	url = https://github.com/microsoft/mimalloc

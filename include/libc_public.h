@@ -7,7 +7,7 @@
 #pragma once
 
 #ifdef _WIN32
-#define _LIBC_API __fastcall
+#define _LIBC_API __cdecl
 
 #ifdef _IN_LIBC
 #define _LIBC_EXPORT __declspec(dllexport)
@@ -15,8 +15,12 @@
 #define _LIBC_EXPORT __declspec(dllimport)
 #endif
 
+// Stop vcruntime.h from trolling
+#define _ACRTIMP _LIBC_EXPORT
+#define _CRT_FUNCTIONS_REQUIRED 0
+
 #ifdef _MSC_VER
-#define _LIBC_ALIAS(Old, New) __pragma("comment(linker, \"/alternatename:" #New "=" #Old "\")")
+#define _LIBC_REEXPORT(Old, New) __pragma("comment(linker, \"/export:" #New "=" #Old "\")")
 
 #if _MSC_VER >= 1400 && __STDC_VERSION__ < 199000L
 #define restrict __restrict
@@ -26,7 +30,7 @@
 #else
 #endif
 #elif defined __linux__
-#define _LIBC_API __fastcall
+#define _LIBC_API __cdecl
 #ifdef _IN_LIBC
 #define _LIBC_EXPORT __attribute__((visibility("default")))
 #endif

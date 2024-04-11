@@ -17,6 +17,12 @@
 
 #ifdef _MSC_VER
 #define _LIBC_ALIAS(Old, New) __pragma("comment(linker, \"/alternatename:" #New "=" #Old "\")")
+
+#if _MSC_VER >= 1400 && __STDC_VERSION__ < 199000L
+#define restrict __restrict
+#else
+#define restrict
+#endif
 #else
 #endif
 #elif defined __linux__
@@ -27,7 +33,9 @@
 #endif
 
 #ifdef __cplusplus
-#define _LIBC_BEGIN_EXTERN_C extern "C" {
+#define _LIBC_BEGIN_EXTERN_C                                                                                           \
+    extern "C"                                                                                                         \
+    {
 #define _LIBC_END_EXTERN_C }
 #else
 #define _LIBC_BEGIN_EXTERN_C

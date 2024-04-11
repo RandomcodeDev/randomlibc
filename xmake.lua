@@ -49,7 +49,10 @@ target("libc")
     add_headerfiles(path.join("include", "**.h"), path.join("libc", "include", "**.h"))
     add_files(
         path.join("libc", "startup", "*.c"),
-        path.join("libc", "stdlib", "*.c")
+        path.join("libc", "stdlib", "*.c"),
+        path.join("libc", "string", "*.c"),
+        path.join("libc", "wchar", "*.c"),
+        path.join("libc", "wctype", "*.c")
     )
 
     if is_plat("windows") then

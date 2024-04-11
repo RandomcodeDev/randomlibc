@@ -6,6 +6,10 @@
 
 #pragma once
 
+#ifndef _WIN32
+#error "This isn't Windows, don't include win32/funcs.h"
+#endif
+
 #include "libc.h"
 
 extern void InitializeFunctionLoader(void);

@@ -18,7 +18,10 @@ _LIBC_EXPORT void _LIBC_API abort(void)
     _Exit(3);
 }
 
-_LIBC_EXPORT void _LIBC_API _LibcHandleAssert(int condition, const char* text)
+_LIBC_EXPORT void _LIBC_API _LibcHandleAssert(int condition, const char *text)
 {
-    abort();
+    if (!condition)
+    {
+        abort();
+    }
 }

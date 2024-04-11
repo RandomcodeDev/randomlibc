@@ -1,7 +1,7 @@
 #include "libc.h"
 #include "startup.h"
 
-BOOL WINAPI _DllMainCRTStartup(HINSTANCE dll, uint32_t reason, void* reserved)
+BOOL WINAPI _DllMainCRTStartup(HINSTANCE dll, uint32_t reason, void *reserved)
 {
     if (!libcInitialized)
     {
